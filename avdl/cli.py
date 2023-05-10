@@ -21,10 +21,12 @@ def avdl() -> None:
 @click.option('-H', '--header', multiple=True, help='request header field')
 @click.option('-o', '--output', default=None, required=False, help='save as filename')
 @click.option('--limit', type=int, default=None, required=False, help='part limit')
+@click.option('--ffmpeg-loglevel', type=str, default='warning', required=False, help='ffmpeg loglevel')
 def m3u8(url: str,
          header: list[str],
          output: str,
-         limit: int | None) -> None:
+         limit: int | None,
+         ffmpeg_loglevel: str) -> None:
     # parse user inputs
     if url is None:
         url = click.prompt('Please input a m3u8 video url:', prompt_suffix='\n>>> ', type=str)
@@ -54,7 +56,7 @@ def m3u8(url: str,
     asyncio.run(download())
 
     # ffmpeg concat
-    combine_parts(output_file, index=index_file)
+    combine_parts(output_file, index=index_file, loglevel=ffmpeg_loglevel)
 
     # confirmation
     click.echo(f'saved as {output}')
