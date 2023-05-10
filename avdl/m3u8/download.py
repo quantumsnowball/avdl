@@ -32,3 +32,7 @@ async def download_m3u8_parts(url_base: URL,
     tasks = [download(part)
              for part in parts]
     await asyncio.gather(*tasks)
+
+    # confirmation
+    ts_file_count = sum(1 for _ in cache_dir.glob('*.ts'))
+    click.echo(f'\nTotal parts downloaded: {ts_file_count}')
