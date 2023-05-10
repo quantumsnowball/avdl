@@ -1,6 +1,4 @@
-import aiohttp
 from aiohttp import ClientSession
-from urllib.parse import urljoin
 
 from yarl import URL
 

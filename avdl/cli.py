@@ -1,3 +1,4 @@
+from pathlib import Path
 from aiohttp import ClientSession
 import click
 import asyncio
@@ -29,6 +30,10 @@ def m3u8(url: str,
     assert len(url) > 0
     req_url = URL(url)
     req_headers = dict(**DEFAULT_HEADERS, **kv_split(header), )
+    if output is None:
+        output = click.prompt('Please input output filename:', prompt_suffix='\n>>> ', type=str)
+    assert len(output) > 0
+    output_file = Path(output)
 
     async def download() -> None:
         # shared session
@@ -39,7 +44,7 @@ def m3u8(url: str,
                 parts = parts[:limit]
             click.echo(f'Total parts: {len(parts)}')
             # start download async
-            await download_m3u8_parts(req_url.parent, parts, session=session)
+            await download_m3u8_parts(req_url.parent, parts, output=output_file, session=session)
     asyncio.run(download())
     # ffmpeg concat
     # save as output
