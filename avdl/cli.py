@@ -23,7 +23,7 @@ def m3u8(url: str,
          header: list[str],
          output: str,
          limit: int | None) -> None:
-    # parse inputs
+    # parse user inputs
     if url is None:
         url = click.prompt('Please input a m3u8 video url:', prompt_suffix='\n>>> ', type=str)
     assert len(url) > 0
@@ -39,7 +39,7 @@ def m3u8(url: str,
                 parts = parts[:limit]
             click.echo(f'Total parts: {len(parts)}')
             # start download async
-            await download_m3u8_parts(req_url.parent, parts)
+            await download_m3u8_parts(req_url.parent, parts, session=session)
     asyncio.run(download())
     # ffmpeg concat
     # save as output

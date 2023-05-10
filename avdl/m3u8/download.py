@@ -1,3 +1,4 @@
+import asyncio
 from collections.abc import Iterable
 from aiohttp import ClientSession
 from yarl import URL
@@ -8,7 +9,8 @@ async def download_m3u8_parts(url_base: URL,
                               *,
                               session: ClientSession) -> None:
     async def download(url: URL) -> None:
-        pass
+        print(f'downloading {url}')
 
-    for part in parts:
-        print(url_base / part)
+    tasks = [download(url_base / part)
+             for part in parts]
+    await asyncio.gather(*tasks)
