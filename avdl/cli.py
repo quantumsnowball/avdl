@@ -60,7 +60,7 @@ def m3u8(url: str,
 
     # confirmation
     assert output_file.is_file()
-    click.echo(f'saved as {output_file}')
+    click.echo(f'\nsaved as {output_file}')
 
     # cleanup
     clean_up_cache(cache_dir)

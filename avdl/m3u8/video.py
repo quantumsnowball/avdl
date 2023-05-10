@@ -4,6 +4,9 @@ import subprocess
 import click
 
 
+TIME_PROGRESS_PREFIX = 'out_time='
+
+
 def combine_parts(output: Path,
                   *,
                   index: Path,
@@ -12,14 +15,18 @@ def combine_parts(output: Path,
 
     # concat
     click.echo('Combining output file using ffmpeg ...')
-    subprocess.run([
+    proc = subprocess.Popen([
         'ffmpeg',
         '-loglevel', loglevel,
+        '-progress', 'pipe:1',
         '-f', 'concat',
         '-i', str(index),
         '-c', 'copy',
         str(output)
-    ])
-
-    # clean up cache dir
-    pass
+    ], stdout=subprocess.PIPE)
+    if proc.stdout is not None:
+        for line_b in proc.stdout:
+            line = line_b.decode().strip()
+            if line.startswith(TIME_PROGRESS_PREFIX):
+                click.echo(line + '\t\r', nl=False)
+    proc.wait()
