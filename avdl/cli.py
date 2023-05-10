@@ -2,6 +2,7 @@ import click
 import asyncio
 from avdl.m3u8.constant import DEFAULT_HEADERS
 from avdl.m3u8.playlist import async_fetch_m3u8
+from avdl.utils.text import kv_split
 
 
 @click.group()
@@ -10,17 +11,19 @@ def avdl() -> None:
 
 
 @avdl.command()
-def m3u8() -> None:
-    url = input('Please input a m3u8 video url:\n>>> ')
-    print('Custom header? (Type name:value/Enter to finish)')
-    headers = {
-        **DEFAULT_HEADERS,
-    }
-    while True:
-        line = input()
-        if not line:
-            break
-        key, val = map(str.strip, line.split(':', 1))
-        headers[key] = val
-    task = async_fetch_m3u8(url, headers)
-    asyncio.run(task)
+@click.argument('url', type=str, default=None, required=False)
+@click.option('-H', '--header', multiple=True, help='request header field')
+@click.option('-o', '--output', default=None, required=False, help='save as filename')
+def m3u8(url: str,
+         header: list[str],
+         output: str) -> None:
+    # parse inputs
+    if url is None:
+        url = click.prompt('Please input a m3u8 video url:', prompt_suffix='\n>>> ')
+    req_headers = dict(**DEFAULT_HEADERS, **kv_split(header), )
+    # fetch playlist
+    playlist = asyncio.run(async_fetch_m3u8(url, req_headers))
+    # start download async
+    # combine ffmpeg
+    # save as output
+    print(f'gonna save as {output}')
