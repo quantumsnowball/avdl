@@ -1,5 +1,7 @@
 import click
 import asyncio
+
+from yarl import URL
 from avdl.m3u8.constant import DEFAULT_HEADERS
 from avdl.m3u8.playlist import async_fetch_m3u8
 from avdl.utils.text import kv_split
@@ -19,10 +21,12 @@ def m3u8(url: str,
          output: str) -> None:
     # parse inputs
     if url is None:
-        url = click.prompt('Please input a m3u8 video url:', prompt_suffix='\n>>> ')
+        url = click.prompt('Please input a m3u8 video url:', prompt_suffix='\n>>> ', type=str)
+    assert len(url) > 0
+    req_url = URL(url)
     req_headers = dict(**DEFAULT_HEADERS, **kv_split(header), )
     # fetch playlist
-    playlist = asyncio.run(async_fetch_m3u8(url, req_headers))
+    playlist = asyncio.run(async_fetch_m3u8(req_url, req_headers))
     click.echo(f'Total parts: {len(playlist)}')
     # start download async
     # ffmpeg concat
