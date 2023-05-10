@@ -7,6 +7,7 @@ from yarl import URL
 
 
 CACHE_DIR_PARENT = '.avdl'
+INDEX_NAME = 'index.txt'
 
 
 async def download_m3u8_parts(url_base: URL,
@@ -14,16 +15,22 @@ async def download_m3u8_parts(url_base: URL,
                               *,
                               output: Path,
                               session: ClientSession) -> None:
+    # prepare dir
     cache_dir = CACHE_DIR_PARENT / output
     cache_dir.mkdir(parents=True)
+    # write index
+    index_file = cache_dir / INDEX_NAME
+    with open(index_file, 'w') as f:
+        for part in parts:
+            f.write(f'file {part}\n')
 
+    # download parts
     async def download(part: str) -> None:
         async with session.get(url_base / part) as response:
             data = await response.read()
             with open(cache_dir / part, 'wb') as f:
                 f.write(data)
-                click.echo(f'{part}')
-
+                click.echo('.', nl=False)
     tasks = [download(part)
              for part in parts]
     await asyncio.gather(*tasks)

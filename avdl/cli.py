@@ -47,5 +47,6 @@ def m3u8(url: str,
             await download_m3u8_parts(req_url.parent, parts, output=output_file, session=session)
     asyncio.run(download())
     # ffmpeg concat
-    # save as output
-    click.echo(f'gonna save as {output}')
+    # clean up cache dir
+    # confirmation
+    click.echo(f'saved as {output}')
