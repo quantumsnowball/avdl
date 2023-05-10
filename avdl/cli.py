@@ -16,18 +16,22 @@ def avdl() -> None:
 @click.argument('url', type=str, default=None, required=False)
 @click.option('-H', '--header', multiple=True, help='request header field')
 @click.option('-o', '--output', default=None, required=False, help='save as filename')
+@click.option('--limit', type=int, default=None, required=False, help='part limit')
 def m3u8(url: str,
          header: list[str],
-         output: str) -> None:
+         output: str,
+         limit: int | None) -> None:
     # parse inputs
     if url is None:
         url = click.prompt('Please input a m3u8 video url:', prompt_suffix='\n>>> ', type=str)
     assert len(url) > 0
     req_url = URL(url)
+    req_url_base = req_url.parent
     req_headers = dict(**DEFAULT_HEADERS, **kv_split(header), )
     # fetch playlist
-    playlist = asyncio.run(async_fetch_m3u8(req_url, req_headers))
-    click.echo(f'Total parts: {len(playlist)}')
+    parts = asyncio.run(async_fetch_m3u8(req_url, req_headers))
+    parts = parts[:limit]
+    click.echo(f'Total parts: {len(parts)}')
     # start download async
     # ffmpeg concat
     # save as output

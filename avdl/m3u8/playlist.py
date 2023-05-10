@@ -10,9 +10,8 @@ async def async_fetch_m3u8(url: URL,
         async with session.get(url) as response:
             # fetch
             m3u8_content = await response.text()
-            base_url = url.parent
             # parse the m3u8 file to get the URLs of the video segments
-            segment_urls = tuple(base_url / line.strip()
-                                 for line in m3u8_content.split('\n')
-                                 if line and not line.startswith('#'))
-            return segment_urls
+            parts = tuple(URL(line.strip())
+                          for line in m3u8_content.split('\n')
+                          if line and not line.startswith('#'))
+            return parts
