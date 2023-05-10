@@ -23,7 +23,8 @@ def m3u8(url: str,
     req_headers = dict(**DEFAULT_HEADERS, **kv_split(header), )
     # fetch playlist
     playlist = asyncio.run(async_fetch_m3u8(url, req_headers))
+    click.echo(f'Total parts: {len(playlist)}')
     # start download async
-    # combine ffmpeg
+    # ffmpeg concat
     # save as output
-    print(f'gonna save as {output}')
+    click.echo(f'gonna save as {output}')
