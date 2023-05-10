@@ -1,3 +1,4 @@
+# headers
 DEFAULT_ACCEPT = '*/*'
 DEFAUL_ACCEPT_ENCODING = 'gzip, deflate, br'
 DEFAULT_ACCEPT_LANGUAGE = 'en-US, en;q = 0.9'
@@ -9,3 +10,7 @@ DEFAULT_HEADERS = {
     'Accept-Language': DEFAULT_ACCEPT_LANGUAGE,
     'User-Agent': DEFAULT_USER_AGENT,
 }
+
+# cache
+CACHE_DIR_PARENT = '.avdl'
+INDEX_NAME = 'index.txt'

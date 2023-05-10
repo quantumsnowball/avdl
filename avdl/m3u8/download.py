@@ -5,19 +5,17 @@ from aiohttp import ClientSession
 import click
 from yarl import URL
 
-
-CACHE_DIR_PARENT = '.avdl'
-INDEX_NAME = 'index.txt'
+from avdl.m3u8.constant import INDEX_NAME
 
 
 async def download_m3u8_parts(url_base: URL,
                               parts: Iterable[str],
                               *,
-                              output: Path,
+                              cache_dir: Path,
                               session: ClientSession) -> None:
     # prepare dir
-    cache_dir = CACHE_DIR_PARENT / output
     cache_dir.mkdir(parents=True)
+
     # write index
     index_file = cache_dir / INDEX_NAME
     with open(index_file, 'w') as f:

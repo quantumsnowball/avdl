@@ -4,9 +4,10 @@ import click
 import asyncio
 
 from yarl import URL
-from avdl.m3u8.constant import DEFAULT_HEADERS
+from avdl.m3u8.constant import CACHE_DIR_PARENT, DEFAULT_HEADERS, INDEX_NAME
 from avdl.m3u8.download import download_m3u8_parts
 from avdl.m3u8.playlist import async_fetch_m3u8
+from avdl.m3u8.video import combine_parts
 from avdl.utils.text import kv_split
 
 
@@ -33,8 +34,13 @@ def m3u8(url: str,
     if output is None:
         output = click.prompt('Please input output filename:', prompt_suffix='\n>>> ', type=str)
     assert len(output) > 0
-    output_file = Path(output)
 
+    # define paths
+    output_file = Path(output)
+    cache_dir = CACHE_DIR_PARENT / output_file
+    index_file = cache_dir / INDEX_NAME
+
+    # download
     async def download() -> None:
         # shared session
         async with ClientSession(headers=req_headers) as session:
@@ -44,9 +50,11 @@ def m3u8(url: str,
                 parts = parts[:limit]
             click.echo(f'Total parts: {len(parts)}')
             # start download async
-            await download_m3u8_parts(req_url.parent, parts, output=output_file, session=session)
+            await download_m3u8_parts(req_url.parent, parts, cache_dir=cache_dir, session=session)
     asyncio.run(download())
+
     # ffmpeg concat
-    # clean up cache dir
+    combine_parts(index_file)
+
     # confirmation
     click.echo(f'saved as {output}')
