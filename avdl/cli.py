@@ -1,3 +1,4 @@
+from aiohttp import ClientSession
 import click
 import asyncio
 
@@ -28,11 +29,17 @@ def m3u8(url: str,
     req_url = URL(url)
     req_url_base = req_url.parent
     req_headers = dict(**DEFAULT_HEADERS, **kv_split(header), )
-    # fetch playlist
-    parts = asyncio.run(async_fetch_m3u8(req_url, req_headers))
-    parts = parts[:limit]
-    click.echo(f'Total parts: {len(parts)}')
-    # start download async
+
+    async def download() -> None:
+        # shared session
+        async with ClientSession(headers=req_headers) as session:
+            # fetch playlist
+            parts = await async_fetch_m3u8(req_url, session=session)
+            if limit is not None:
+                parts = parts[:limit]
+            click.echo(f'Total parts: {len(parts)}')
+            # start download async
+    asyncio.run(download())
     # ffmpeg concat
     # save as output
     click.echo(f'gonna save as {output}')
