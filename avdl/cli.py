@@ -1,3 +1,4 @@
+import click
 import asyncio
 import aiohttp
 
@@ -18,7 +19,13 @@ async def fetch_m3u8(url: str,
             print(segment_urls)
 
 
+@click.group()
 def avdl() -> None:
+    pass
+
+
+@avdl.command()
+def m3u8() -> None:
     url = input('Please input a m3u8 video url:\n>>> ')
     print('Custom header? (Type name:value/Enter to finish)')
     headers = {
