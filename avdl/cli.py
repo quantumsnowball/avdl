@@ -54,7 +54,7 @@ def m3u8(url: str,
     asyncio.run(download())
 
     # ffmpeg concat
-    combine_parts(index_file)
+    combine_parts(output_file, index=index_file)
 
     # confirmation
     click.echo(f'saved as {output}')
