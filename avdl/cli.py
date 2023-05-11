@@ -34,9 +34,10 @@ def m3u8(url: str,
     # fetch playlist
     parts = asyncio.run(async_fetch_m3u8(req_url,
                                          headers=req_headers))
+    click.echo(f'Total parts: {len(parts)}')
     if limit is not None:
         parts = parts[:limit]
-    click.echo(f'Total parts: {len(parts)}')
+        click.echo(f'Only downloading the first {len(parts)} parts')
 
     # ask for save filename if not already exists
     if output is None:
