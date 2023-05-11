@@ -26,7 +26,7 @@ def m3u8(url: str,
          limit: int | None) -> None:
     # parse user inputs
     if url is None:
-        url = click.prompt('Please input a m3u8 video url:', prompt_suffix='\n>>> ', type=str)
+        url = click.prompt(click.style('Please input a m3u8 video url', fg='blue'), type=str)
     assert len(url) > 0
     req_url = URL(url)
     req_headers = dict(**DEFAULT_HEADERS, **kv_split(header), )
@@ -37,11 +37,11 @@ def m3u8(url: str,
     click.echo(f'Total parts: {len(parts)}')
     if limit is not None:
         parts = parts[:limit]
-        click.echo(f'Only downloading the first {len(parts)} parts')
+        click.secho(f'Only downloading the first {len(parts)} parts', fg='yellow')
 
     # ask for save filename if not already exists
     if output is None:
-        output = click.prompt('Please input output filename:', prompt_suffix='\n>>> ', type=str)
+        output = click.prompt(click.style('Please input output filename', fg='blue'), type=str)
     assert len(output) > 0
 
     # define paths
@@ -60,7 +60,7 @@ def m3u8(url: str,
 
     # confirmation
     assert output_file.is_file()
-    click.echo(f'\nsaved as {output_file}')
+    click.echo(click.style(f'\nsaved as {output_file}', fg='green'))
 
     # cleanup
     clean_up_cache(cache_dir)
