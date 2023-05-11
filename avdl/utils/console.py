@@ -22,6 +22,12 @@ def print_success(message: str,
     return click.secho(message, *args, fg='green', **kwargs)
 
 
+def print_error(message: str,
+                *args: Any,
+                **kwargs: Any):
+    return click.secho(message, *args, fg='red', **kwargs)
+
+
 def print_key_value(message: str,
                     value: Any,
                     *args: Any,

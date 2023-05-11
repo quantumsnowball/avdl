@@ -11,6 +11,7 @@ async def async_fetch_m3u8(url: URL,
                            headers: dict[str, str]) -> tuple[tuple[str, ...], dict[str, Any]]:
     async with ClientSession(headers=headers) as session:
         async with session.get(url) as response:
+            assert response.status == 200, 'Invalid playlist, please check request headers'
             # fetch
             m3u8_content = await response.text()
             lines = m3u8_content.split('\n')

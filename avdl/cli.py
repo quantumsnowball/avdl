@@ -7,7 +7,7 @@ from avdl.m3u8.constant import CACHE_DIR_PARENT, DEFAULT_HEADERS, INDEX_NAME
 from avdl.m3u8.download import clean_up_cache, download_m3u8_parts
 from avdl.m3u8.playlist import async_fetch_m3u8
 from avdl.m3u8.video import combine_parts
-from avdl.utils.console import print_key_value, print_success, print_warning, require_user_input
+from avdl.utils.console import print_error, print_key_value, print_success, print_warning, require_user_input
 from avdl.utils.text import kv_split
 
 
@@ -33,10 +33,14 @@ def m3u8(url: str,
     req_headers = dict(**DEFAULT_HEADERS, **kv_split(header), )
 
     # fetch playlist
-    parts, playlist_info = asyncio.run(async_fetch_m3u8(req_url,
-                                                        headers=req_headers))
-    for key, val in playlist_info.items():
-        print_key_value(key, val)
+    try:
+        parts, playlist_info = asyncio.run(async_fetch_m3u8(req_url,
+                                                            headers=req_headers))
+        for key, val in playlist_info.items():
+            print_key_value(key, val)
+    except Exception as e:
+        print_error(str(e))
+        return
 
     # trim if limit
     if limit is not None:
