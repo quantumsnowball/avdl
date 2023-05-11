@@ -30,9 +30,6 @@ def m3u8(url: str,
     assert len(url) > 0
     req_url = URL(url)
     req_headers = dict(**DEFAULT_HEADERS, **kv_split(header), )
-    if output is None:
-        output = click.prompt('Please input output filename:', prompt_suffix='\n>>> ', type=str)
-    assert len(output) > 0
 
     # fetch playlist
     parts = asyncio.run(async_fetch_m3u8(req_url,
@@ -40,6 +37,11 @@ def m3u8(url: str,
     if limit is not None:
         parts = parts[:limit]
     click.echo(f'Total parts: {len(parts)}')
+
+    # ask for save filename if not already exists
+    if output is None:
+        output = click.prompt('Please input output filename:', prompt_suffix='\n>>> ', type=str)
+    assert len(output) > 0
 
     # define paths
     output_file = Path(output)
