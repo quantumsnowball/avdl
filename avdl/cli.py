@@ -1,5 +1,4 @@
 from pathlib import Path
-from aiohttp import ClientSession
 import click
 import asyncio
 
@@ -36,15 +35,10 @@ def m3u8(url: str,
     assert len(output) > 0
 
     # fetch playlist
-    async def fetch_playlist() -> tuple[str, ...]:
-        # shared session
-        async with ClientSession(headers=req_headers) as session:
-            # fetch playlist
-            parts = await async_fetch_m3u8(req_url, session=session)
-            if limit is not None:
-                parts = parts[:limit]
-            return parts
-    parts = asyncio.run(fetch_playlist())
+    parts = asyncio.run(async_fetch_m3u8(req_url,
+                                         headers=req_headers))
+    if limit is not None:
+        parts = parts[:limit]
     click.echo(f'Total parts: {len(parts)}')
 
     # define paths
@@ -53,15 +47,13 @@ def m3u8(url: str,
     index_file = cache_dir / INDEX_NAME
 
     # download
-    async def download() -> None:
-        # shared session
-        async with ClientSession(headers=req_headers) as session:
-            # start download async
-            await download_m3u8_parts(req_url.parent, parts, cache_dir=cache_dir, session=session)
-    asyncio.run(download())
+    asyncio.run(download_m3u8_parts(req_url.parent, parts,
+                                    headers=req_headers,
+                                    cache_dir=cache_dir))
 
     # ffmpeg concat
-    combine_parts(output_file, index=index_file)
+    combine_parts(output_file,
+                  index=index_file)
 
     # confirmation
     assert output_file.is_file()
