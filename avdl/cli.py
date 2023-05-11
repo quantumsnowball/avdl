@@ -35,6 +35,18 @@ def m3u8(url: str,
         output = click.prompt('Please input output filename:', prompt_suffix='\n>>> ', type=str)
     assert len(output) > 0
 
+    # fetch playlist
+    async def fetch_playlist() -> tuple[str, ...]:
+        # shared session
+        async with ClientSession(headers=req_headers) as session:
+            # fetch playlist
+            parts = await async_fetch_m3u8(req_url, session=session)
+            if limit is not None:
+                parts = parts[:limit]
+            return parts
+    parts = asyncio.run(fetch_playlist())
+    click.echo(f'Total parts: {len(parts)}')
+
     # define paths
     output_file = Path(output)
     cache_dir = CACHE_DIR_PARENT / output_file
@@ -44,11 +56,6 @@ def m3u8(url: str,
     async def download() -> None:
         # shared session
         async with ClientSession(headers=req_headers) as session:
-            # fetch playlist
-            parts = await async_fetch_m3u8(req_url, session=session)
-            if limit is not None:
-                parts = parts[:limit]
-            click.echo(f'Total parts: {len(parts)}')
             # start download async
             await download_m3u8_parts(req_url.parent, parts, cache_dir=cache_dir, session=session)
     asyncio.run(download())

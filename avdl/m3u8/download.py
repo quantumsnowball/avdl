@@ -6,7 +6,7 @@ import click
 from yarl import URL
 import shutil
 
-from avdl.m3u8.constant import CACHE_DIR_PARENT, INDEX_NAME
+from avdl.m3u8.constant import INDEX_NAME
 
 
 async def download_m3u8_parts(url_base: URL,
