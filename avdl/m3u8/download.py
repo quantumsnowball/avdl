@@ -26,7 +26,9 @@ async def download_m3u8_parts(url_base: URL,
                 f.write(f'file {part}\n')
 
         # download parts
-        with click.progressbar(length=len(parts)) as bar:
+        with click.progressbar(length=len(parts),
+                               label='Download',
+                               width=click.get_terminal_size()[0]//2) as bar:
             lock = asyncio.Lock()
 
             async def download(part: str) -> None:
