@@ -41,10 +41,6 @@ async def download_m3u8_parts(url_base: URL,
 
             await asyncio.gather(*[download(part) for part in parts])
 
-        # confirmation
-        ts_file_count = sum(1 for _ in cache_dir.glob('*.ts'))
-        print_key_value('\nTotal parts downloaded', ts_file_count)
-
 
 def clean_up_cache(cache_dir: Path) -> None:
     # remove self cache
