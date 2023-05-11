@@ -34,10 +34,9 @@ def m3u8(url: str,
 
     # fetch playlist
     try:
-        parts, playlist_info = asyncio.run(async_fetch_m3u8(req_url,
-                                                            headers=req_headers))
-        for key, val in playlist_info.items():
-            print_key_value(key, val)
+        parts, info = asyncio.run(async_fetch_m3u8(req_url,
+                                                   headers=req_headers))
+        print_key_value('duration', f'{info["duration"]} ({info["count"]} parts)')
     except Exception as e:
         print_error(str(e))
         return
@@ -65,7 +64,7 @@ def m3u8(url: str,
     # ffmpeg concat
     combine_parts(output_file,
                   index=index_file,
-                  total_seconds=playlist_info['total_seconds'])
+                  total_seconds=info['total_seconds'])
 
     # confirmation
     assert output_file.is_file()
