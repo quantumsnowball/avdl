@@ -33,9 +33,12 @@ def m3u8(url: str,
     req_headers = dict(**DEFAULT_HEADERS, **kv_split(header), )
 
     # fetch playlist
-    parts = asyncio.run(async_fetch_m3u8(req_url,
-                                         headers=req_headers))
-    print_key_value('Total parts', len(parts))
+    parts, playlist_info = asyncio.run(async_fetch_m3u8(req_url,
+                                                        headers=req_headers))
+    for key, val in playlist_info.items():
+        print_key_value(key, val)
+
+    # trim if limit
     if limit is not None:
         parts = parts[:limit]
         print_warning(f'Only downloading the first {len(parts)} parts')
