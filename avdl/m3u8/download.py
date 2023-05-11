@@ -27,7 +27,7 @@ async def download_m3u8_parts(url_base: URL,
 
         # download parts
         with click.progressbar(length=len(parts),
-                               label='Download',
+                               label='Downloading',
                                width=click.get_terminal_size()[0]//2) as bar:
             lock = asyncio.Lock()
 

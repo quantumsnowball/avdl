@@ -64,11 +64,12 @@ def m3u8(url: str,
 
     # ffmpeg concat
     combine_parts(output_file,
-                  index=index_file)
+                  index=index_file,
+                  total_seconds=playlist_info['total_seconds'])
 
     # confirmation
     assert output_file.is_file()
-    print_success(f'\nSaved as {output_file}')
+    print_success(f'Saved as {output_file}')
 
     # cleanup
     clean_up_cache(cache_dir)

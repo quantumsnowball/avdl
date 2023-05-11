@@ -25,5 +25,6 @@ async def async_fetch_m3u8(url: URL,
                                       for line in lines
                                       if line.startswith('#EXTINF:')))
             info = dict(count=count,
+                        total_seconds=total_seconds,
                         duration=str(datetime.timedelta(seconds=total_seconds)),)
             return parts, info
