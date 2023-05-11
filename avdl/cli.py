@@ -7,6 +7,7 @@ from avdl.m3u8.constant import CACHE_DIR_PARENT, DEFAULT_HEADERS, INDEX_NAME
 from avdl.m3u8.download import clean_up_cache, download_m3u8_parts
 from avdl.m3u8.playlist import async_fetch_m3u8
 from avdl.m3u8.video import combine_parts
+from avdl.utils.console import print_key_value, print_success, print_warning, require_user_input
 from avdl.utils.text import kv_split
 
 
@@ -26,7 +27,7 @@ def m3u8(url: str,
          limit: int | None) -> None:
     # parse user inputs
     if url is None:
-        url = click.prompt(click.style('Please input a m3u8 video url', fg='blue'), type=str)
+        url = require_user_input('Please input a m3u8 video url')
     assert len(url) > 0
     req_url = URL(url)
     req_headers = dict(**DEFAULT_HEADERS, **kv_split(header), )
@@ -34,14 +35,14 @@ def m3u8(url: str,
     # fetch playlist
     parts = asyncio.run(async_fetch_m3u8(req_url,
                                          headers=req_headers))
-    click.echo(f'Total parts: {len(parts)}')
+    print_key_value('Total parts', len(parts))
     if limit is not None:
         parts = parts[:limit]
-        click.secho(f'Only downloading the first {len(parts)} parts', fg='yellow')
+        print_warning(f'Only downloading the first {len(parts)} parts')
 
     # ask for save filename if not already exists
     if output is None:
-        output = click.prompt(click.style('Please input output filename', fg='blue'), type=str)
+        output = require_user_input('Please input output filename')
     assert len(output) > 0
 
     # define paths
@@ -60,7 +61,7 @@ def m3u8(url: str,
 
     # confirmation
     assert output_file.is_file()
-    click.echo(click.style(f'\nsaved as {output_file}', fg='green'))
+    print_success(f'\nSaved as {output_file}')
 
     # cleanup
     clean_up_cache(cache_dir)

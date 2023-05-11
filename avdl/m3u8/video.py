@@ -3,6 +3,8 @@ import subprocess
 
 import click
 
+from avdl.utils.console import print_warning
+
 
 TIME_PROGRESS_PREFIX = 'out_time='
 
@@ -13,7 +15,7 @@ def combine_parts(output: Path,
     assert index.is_file()
 
     # concat
-    click.echo('Combining output file using ffmpeg ...')
+    print_warning('Combining output file using ffmpeg ...')
     proc = subprocess.Popen([
         'ffmpeg',
         '-loglevel', 'fatal',
