@@ -17,7 +17,7 @@ def avdl() -> None:
 
 
 @avdl.command()
-@click.argument('url', type=str, default=None, required=False)
+@click.argument('url', type=str, default='', required=False)
 @click.option('-H', '--header', multiple=True, help='request header field')
 @click.option('-o', '--output', default=None, required=False, help='save as filename')
 @click.option('--limit', type=int, default=None, required=False, help='part limit')
@@ -25,20 +25,26 @@ def m3u8(url: str,
          header: list[str],
          output: str,
          limit: int | None) -> None:
-    # parse user inputs
-    if url is None:
-        url = require_user_input('Please input a m3u8 video url')
-    req_url = URL(url)
+    # request header
     req_headers = dict(**DEFAULT_HEADERS, **kv_split(header), )
 
-    # fetch playlist
-    try:
-        parts, info = asyncio.run(async_fetch_m3u8(req_url,
-                                                   headers=req_headers))
-        print_key_value('duration', f'{info["duration"]} ({info["count"]} parts)')
-    except Exception as e:
-        print_error(f'{e.__class__.__name__}: {str(e)}')
-        return
+    # loop until fetched a valid playlist
+    while True:
+        # ask for url if user not provided, or if fetch playlist failed
+        if not url:
+            url = require_user_input('Please input a m3u8 video url')
+        req_url = URL(url)
+
+        try:
+            # fetch playlist
+            parts, info = asyncio.run(async_fetch_m3u8(req_url, headers=req_headers))
+            print_key_value('duration', f'{info["duration"]} ({info["count"]} parts)')
+            break
+        except Exception as e:
+            # reset url input
+            url = ''
+            print_error(f'{e.__class__.__name__}: {str(e)}')
+            continue
 
     # trim if limit
     if limit is not None:
