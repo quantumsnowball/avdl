@@ -15,7 +15,7 @@ def require_user_input(message: str,
                 raise ValueError('Empty string is not allowed')
             return user_input
         except Exception as e:
-            print_error(f'{e.__class__.__name__}: {str(e)}')
+            print_exception(e)
             continue
 
 
@@ -35,6 +35,10 @@ def print_error(message: str,
                 *args: Any,
                 **kwargs: Any) -> None:
     return click.secho(message, *args, fg='red', **kwargs)
+
+
+def print_exception(e: Exception) -> None:
+    print_error(f'{e.__class__.__name__}: {str(e)}')
 
 
 def print_key_value(message: str,
