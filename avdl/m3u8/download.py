@@ -1,6 +1,6 @@
 from pathlib import Path
 import asyncio
-from collections.abc import Iterable
+from typing import Sequence
 from aiohttp import ClientSession
 import click
 from yarl import URL
@@ -11,7 +11,7 @@ from avdl.utils.console import print_key_value
 
 
 async def download_m3u8_parts(url_base: URL,
-                              parts: Iterable[str],
+                              parts: Sequence[str],
                               *,
                               headers: dict[str, str],
                               cache_dir: Path) -> None:
@@ -26,19 +26,20 @@ async def download_m3u8_parts(url_base: URL,
                 f.write(f'file {part}\n')
 
         # download parts
-        async def download(part: str) -> None:
-            async with session.get(url_base / part) as response:
-                data = await response.read()
-                with open(cache_dir / part, 'wb') as f:
-                    f.write(data)
-                    click.echo('.', nl=False)
-        tasks = [download(part)
-                 for part in parts]
-        await asyncio.gather(*tasks)
+        with click.progressbar(length=len(parts),
+                               label='Downloading',
+                               width=click.get_terminal_size()[0]//2) as bar:
+            lock = asyncio.Lock()
 
-        # confirmation
-        ts_file_count = sum(1 for _ in cache_dir.glob('*.ts'))
-        print_key_value('\nTotal parts downloaded', ts_file_count)
+            async def download(part: str) -> None:
+                async with session.get(url_base / part) as response:
+                    data = await response.read()
+                    with open(cache_dir / part, 'wb') as f:
+                        f.write(data)
+                        async with lock:
+                            bar.update(1)
+
+            await asyncio.gather(*[download(part) for part in parts])
 
 
 def clean_up_cache(cache_dir: Path) -> None:
