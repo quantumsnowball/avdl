@@ -28,7 +28,6 @@ def m3u8(url: str,
     # parse user inputs
     if url is None:
         url = require_user_input('Please input a m3u8 video url')
-    assert len(url) > 0
     req_url = URL(url)
     req_headers = dict(**DEFAULT_HEADERS, **kv_split(header), )
 
@@ -49,7 +48,6 @@ def m3u8(url: str,
     # ask for save filename if not already exists
     if output is None:
         output = require_user_input('Please input output filename')
-    assert len(output) > 0
 
     # define paths
     output_file = Path(output)

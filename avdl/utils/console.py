@@ -5,9 +5,18 @@ import click
 
 def require_user_input(message: str,
                        *args: Any,
+                       non_empty: bool = True,
                        **kwargs: Any) -> str:
     styled_message = click.style(message, fg='cyan')
-    return input(styled_message + ': ', *args, **kwargs)
+    while True:
+        try:
+            user_input = input(styled_message + ': ', *args, **kwargs)
+            if non_empty and len(user_input) == 0:
+                raise ValueError('Empty string is not allowed')
+            return user_input
+        except Exception as e:
+            print_error(f'{e.__class__.__name__}: {str(e)}')
+            continue
 
 
 def print_warning(message: str,
