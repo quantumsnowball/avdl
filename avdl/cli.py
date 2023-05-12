@@ -38,7 +38,7 @@ def m3u8(url: str,
                                                    headers=req_headers))
         print_key_value('duration', f'{info["duration"]} ({info["count"]} parts)')
     except Exception as e:
-        print_error(str(e))
+        print_error(f'{e.__class__.__name__}: {str(e)}')
         return
 
     # trim if limit
