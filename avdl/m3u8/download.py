@@ -7,14 +7,15 @@ from yarl import URL
 import shutil
 
 from avdl.m3u8.constant import INDEX_NAME
-from avdl.utils.console import print_key_value
+from avdl.utils.console import print_error
 
 
 async def download_m3u8_parts(url_base: URL,
                               parts: Sequence[str],
                               *,
                               headers: dict[str, str],
-                              cache_dir: Path) -> None:
+                              cache_dir: Path,
+                              retries: int) -> None:
     async with ClientSession(headers=headers) as session:
         # prepare dir
         cache_dir.mkdir(parents=True)
@@ -39,7 +40,20 @@ async def download_m3u8_parts(url_base: URL,
                         async with lock:
                             bar.update(1)
 
-            await asyncio.gather(*[download(part) for part in parts])
+            async def retry_download(part: str) -> None:
+                # retry-loop
+                for i in range(retries):
+                    try:
+                        await download(part)
+                        break
+                    except TimeoutError:
+                        # print_error(f'Retrying {i+1}/{retries}: {part}')
+                        continue
+                else:
+                    # max retry reached
+                    raise TimeoutError(f'{retries=}, {part=}')
+
+            await asyncio.gather(*[retry_download(part) for part in parts])
 
 
 def clean_up_cache(cache_dir: Path) -> None:
