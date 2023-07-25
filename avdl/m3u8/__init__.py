@@ -16,7 +16,7 @@ from avdl.utils.text import kv_split
 @click.option('-H', '--header', multiple=True, help='request header field')
 @click.option('-o', '--output', default=None, required=False, help='save as filename')
 @click.option('--limit', type=int, default=None, required=False, help='part limit')
-@click.option('--retries', type=int, default=20, required=False, help='attempts to retry when timeout')
+@click.option('--retries', type=int, default=20, required=False, help='timeout retries', show_default=True)
 def m3u8(url: str,
          header: list[str],
          output: str,
