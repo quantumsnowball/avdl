@@ -16,10 +16,12 @@ from avdl.utils.text import kv_split
 @click.option('-H', '--header', multiple=True, help='request header field')
 @click.option('-o', '--output', default=None, required=False, help='save as filename')
 @click.option('--limit', type=int, default=None, required=False, help='part limit')
+@click.option('--retries', type=int, default=20, required=False, help='timeout retries', show_default=True)
 def m3u8(url: str,
          header: list[str],
          output: str,
-         limit: int | None) -> None:
+         limit: int | None,
+         retries: int) -> None:
     # request header
     req_headers = dict(**DEFAULT_HEADERS, **kv_split(header), )
 
@@ -58,7 +60,8 @@ def m3u8(url: str,
     # download
     asyncio.run(download_m3u8_parts(req_url.parent, parts,
                                     headers=req_headers,
-                                    cache_dir=cache_dir))
+                                    cache_dir=cache_dir,
+                                    retries=retries))
 
     # ffmpeg concat
     combine_parts(output_file,
