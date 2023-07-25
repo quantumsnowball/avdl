@@ -50,7 +50,8 @@ def m3u8(url: str,
 
     # ask for save filename if not already exists
     if output is None:
-        output = require_user_input('Please input output filename')
+        output = require_user_input('Please input output filename',
+                                    forbidden_chars=('/', '\\'))
 
     # define paths
     output_file = Path(output)
