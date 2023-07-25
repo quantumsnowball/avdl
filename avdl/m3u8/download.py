@@ -7,7 +7,6 @@ from yarl import URL
 import shutil
 
 from avdl.m3u8.constant import INDEX_NAME
-from avdl.utils.console import print_error
 
 
 async def download_m3u8_parts(url_base: URL,
@@ -40,20 +39,19 @@ async def download_m3u8_parts(url_base: URL,
                         async with lock:
                             bar.update(1)
 
-            async def retry_download(part: str) -> None:
+            async def download_with_retry(part: str) -> None:
                 # retry-loop
-                for i in range(retries):
+                for _ in range(retries):
                     try:
                         await download(part)
                         break
                     except TimeoutError:
-                        # print_error(f'Retrying {i+1}/{retries}: {part}')
                         continue
                 else:
                     # max retry reached
                     raise TimeoutError(f'{retries=}, {part=}')
 
-            await asyncio.gather(*[retry_download(part) for part in parts])
+            await asyncio.gather(*[download_with_retry(part) for part in parts])
 
 
 def clean_up_cache(cache_dir: Path) -> None:
