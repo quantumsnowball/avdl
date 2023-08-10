@@ -10,7 +10,7 @@ from avdl.m3u8.constant import INDEX_NAME
 
 
 async def download_m3u8_parts(url_base: URL,
-                              parts: Sequence[str],
+                              parts: Sequence[URL],
                               *,
                               headers: dict[str, str],
                               cache_dir: Path,
@@ -23,7 +23,7 @@ async def download_m3u8_parts(url_base: URL,
         index_file = cache_dir / INDEX_NAME
         with open(index_file, 'w') as f:
             for part in parts:
-                f.write(f'file {part}\n')
+                f.write(f'file {part.name}\n')
 
         # download parts
         with click.progressbar(length=len(parts),
@@ -31,15 +31,16 @@ async def download_m3u8_parts(url_base: URL,
                                width=click.get_terminal_size()[0]//2) as bar:
             lock = asyncio.Lock()
 
-            async def download(part: str) -> None:
-                async with session.get(url_base / part) as response:
+            async def download(part: URL) -> None:
+                url = part if part.is_absolute() else url_base / part.name
+                async with session.get(url) as response:
                     data = await response.read()
-                    with open(cache_dir / part, 'wb') as f:
+                    with open(cache_dir / part.name, 'wb') as f:
                         f.write(data)
                         async with lock:
                             bar.update(1)
 
-            async def download_with_retry(part: str) -> None:
+            async def download_with_retry(part: URL) -> None:
                 # retry-loop
                 for _ in range(retries):
                     try:

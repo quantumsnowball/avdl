@@ -8,7 +8,7 @@ import datetime
 
 async def async_fetch_m3u8(url: URL,
                            *,
-                           headers: dict[str, str]) -> tuple[tuple[str, ...], dict[str, Any]]:
+                           headers: dict[str, str]) -> tuple[tuple[URL, ...], dict[str, Any]]:
     async with ClientSession(headers=headers) as session:
         async with session.get(url) as response:
             assert response.status == 200, 'Invalid playlist, please check request headers'
@@ -16,7 +16,7 @@ async def async_fetch_m3u8(url: URL,
             m3u8_content = await response.text()
             lines = m3u8_content.split('\n')
             # parts
-            parts = tuple(line.strip()
+            parts = tuple(URL(line.strip())
                           for line in lines
                           if line and not line.startswith('#'))
             # duration
