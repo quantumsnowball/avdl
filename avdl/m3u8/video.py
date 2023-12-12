@@ -1,8 +1,7 @@
 from pathlib import Path
 import subprocess
-
 import click
-
+import shutil
 from avdl.utils.console import print_warning
 from datetime import datetime
 
@@ -32,7 +31,7 @@ def combine_parts(output: Path,
     if proc.stdout is not None:
         with click.progressbar(length=total_seconds,
                                label='Combining',
-                               width=click.get_terminal_size()[0]//2) as bar:
+                               width=shutil.get_terminal_size()[0]//2) as bar:
             for line_b in proc.stdout:
                 line = line_b.decode().strip()
                 try:
