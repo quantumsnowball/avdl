@@ -1,12 +1,15 @@
-from pathlib import Path
 import asyncio
-from typing import Sequence
-from aiohttp import ClientSession
-import click
-from yarl import URL
 import shutil
+from pathlib import Path
+from typing import Sequence
+
+import click
+from aiohttp import ClientSession
+from aiohttp.client_exceptions import ClientPayloadError
+from yarl import URL
 
 from avdl.m3u8.constant import INDEX_NAME
+from avdl.utils.console import print_error
 
 
 async def download_m3u8_parts(url_base: URL,
@@ -46,7 +49,10 @@ async def download_m3u8_parts(url_base: URL,
                     try:
                         await download(part)
                         break
-                    except TimeoutError:
+                    except (TimeoutError, ClientPayloadError):
+                        continue
+                    except Exception as e:
+                        print_error(str(e))
                         continue
                 else:
                     # max retry reached
