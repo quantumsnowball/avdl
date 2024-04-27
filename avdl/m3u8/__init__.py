@@ -67,7 +67,8 @@ def m3u8(url: str,
     asyncio.run(download_m3u8_parts(req_url.parent, parts,
                                     headers=req_headers,
                                     cache_dir=cache_dir,
-                                    retries=retries))
+                                    retries=retries,
+                                    debug=debug))
 
     # ffmpeg concat
     combine_parts(output_file,
@@ -79,4 +80,4 @@ def m3u8(url: str,
     print_success(f'Saved as {output_file}')
 
     # cleanup
-    clean_up_cache(cache_dir)
+    # clean_up_cache(cache_dir)

@@ -9,7 +9,7 @@ from aiohttp.client_exceptions import ClientPayloadError
 from yarl import URL
 
 from avdl.m3u8.constant import INDEX_NAME
-from avdl.utils.console import print_error
+from avdl.utils.logging import create_logger
 
 
 async def download_m3u8_parts(url_base: URL,
@@ -17,10 +17,16 @@ async def download_m3u8_parts(url_base: URL,
                               *,
                               headers: dict[str, str],
                               cache_dir: Path,
-                              retries: int) -> None:
+                              retries: int,
+                              debug: bool) -> None:
     async with ClientSession(headers=headers) as session:
         # prepare dir
         cache_dir.mkdir(parents=True)
+
+        # logger
+        logger = create_logger(__name__,
+                               'DEBUG' if debug else 'WARNING',
+                               cache_dir / 'log.txt')
 
         # write index
         index_file = cache_dir / INDEX_NAME
@@ -48,11 +54,13 @@ async def download_m3u8_parts(url_base: URL,
                 for _ in range(retries):
                     try:
                         await download(part)
+                        logger.debug(f'Downloaded {part}')
                         break
-                    except (TimeoutError, ClientPayloadError):
+                    except (TimeoutError, ClientPayloadError) as e:
+                        logger.error(e, exc_info=True)
                         continue
                     except Exception as e:
-                        print_error(str(e))
+                        logger.critical(e, exc_info=True)
                         continue
                 else:
                     # max retry reached
