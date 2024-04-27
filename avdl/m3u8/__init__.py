@@ -1,13 +1,16 @@
-from pathlib import Path
-import click
 import asyncio
+from pathlib import Path
 
+import click
 from yarl import URL
+
 from avdl.m3u8.constant import CACHE_DIR_PARENT, DEFAULT_HEADERS, INDEX_NAME
 from avdl.m3u8.download import clean_up_cache, download_m3u8_parts
 from avdl.m3u8.playlist import async_fetch_m3u8
 from avdl.m3u8.video import combine_parts
-from avdl.utils.console import print_exception, print_key_value, print_success, print_warning, require_user_input
+from avdl.utils.console import (print_exception, print_key_value,
+                                print_success, print_warning,
+                                require_user_input)
 from avdl.utils.text import kv_split
 
 
@@ -17,11 +20,13 @@ from avdl.utils.text import kv_split
 @click.option('-o', '--output', default=None, required=False, help='save as filename')
 @click.option('--limit', type=int, default=None, required=False, help='part limit')
 @click.option('--retries', type=int, default=20, required=False, help='timeout retries', show_default=True)
+@click.option('--debug', is_flag=True, help='log all debug message')
 def m3u8(url: str,
          header: list[str],
          output: str,
          limit: int | None,
-         retries: int) -> None:
+         retries: int,
+         debug: bool) -> None:
     # request header
     req_headers = dict(**DEFAULT_HEADERS, **kv_split(header), )
 
