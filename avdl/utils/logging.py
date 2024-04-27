@@ -6,20 +6,21 @@ from typing import Literal
 
 LOG_FILENAME_PREFIX = 'log'
 LOG_FILENAME_EXT = 'txt'
-TIMESTAMP_FORMAT = '%Y%m%d-%H%M%S'
+LOG_FILENAME_TIMESTAMP_FORMAT = '%Y%m%d-%H%M%S'
 DEFAULT_CONFIG = {
     'version': 1,
     'disable_existing_loggers': False,
     'formatters': {
         'standard': {
-            'format': '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+            'format': '\n\n[%(asctime)s] %(levelname)-8s @ %(filename)s:%(lineno)d\n%(message)s',
+            'datefmt': '%d-%m-%Y:%H:%M:%S'
         }
-    },
+    }
 }
 
 
 def generate_log_filename() -> str:
-    timestamp = datetime.now().strftime(TIMESTAMP_FORMAT)
+    timestamp = datetime.now().strftime(LOG_FILENAME_TIMESTAMP_FORMAT)
     filename = f'{LOG_FILENAME_PREFIX}-{timestamp}.{LOG_FILENAME_EXT}'
     return filename
 

@@ -65,7 +65,7 @@ async def download_m3u8_parts(url_base: URL,
                         continue
                 else:
                     # max retry reached
-                    raise TimeoutError(f'{retries=}, {part=}')
+                    raise ConnectionError(f'{retries=}, {part=}')
 
             await asyncio.gather(*[download_with_retry(part) for part in parts])
 
