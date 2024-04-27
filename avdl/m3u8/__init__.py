@@ -9,7 +9,7 @@ from avdl.m3u8.constant import (CACHE_DIR_PARENT, DEFAULT_HEADERS, INDEX_NAME,
 from avdl.m3u8.download import clean_up_cache, download_m3u8_parts
 from avdl.m3u8.playlist import async_fetch_m3u8
 from avdl.m3u8.video import combine_parts
-from avdl.utils.console import (print_exception, print_key_value,
+from avdl.utils.console import (print_error, print_exception, print_key_value,
                                 print_success, print_warning,
                                 require_user_input)
 from avdl.utils.text import kv_split
@@ -65,11 +65,15 @@ def m3u8(url: str,
     index_file = cache_dir / PART_DIRNAME / INDEX_NAME
 
     # download
-    asyncio.run(download_m3u8_parts(req_url.parent, parts,
-                                    headers=req_headers,
-                                    cache_dir=cache_dir,
-                                    retries=retries,
-                                    debug=debug))
+    try:
+        asyncio.run(download_m3u8_parts(req_url.parent, parts,
+                                        headers=req_headers,
+                                        cache_dir=cache_dir,
+                                        retries=retries,
+                                        debug=debug))
+    except ConnectionError as e:
+        print_error(str(e))
+        return
 
     # ffmpeg concat
     combine_parts(output_file,
