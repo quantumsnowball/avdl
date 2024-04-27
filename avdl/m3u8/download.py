@@ -3,6 +3,7 @@ import shutil
 from pathlib import Path
 from typing import Sequence
 
+import aiohttp
 import click
 from aiohttp import ClientSession
 from aiohttp.client_exceptions import ClientPayloadError
@@ -57,7 +58,11 @@ async def download_m3u8_parts(url_base: URL,
                         await download(part)
                         logger.debug(f'Downloaded {part}')
                         break
-                    except (TimeoutError, ClientPayloadError) as e:
+                    except (aiohttp.ClientResponseError,
+                            aiohttp.ClientConnectorError,
+                            aiohttp.ClientPayloadError,
+                            aiohttp.ServerTimeoutError,
+                            aiohttp.ServerDisconnectedError) as e:
                         logger.error(e, exc_info=True)
                         continue
                     except Exception as e:
