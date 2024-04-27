@@ -8,8 +8,8 @@ from aiohttp import ClientSession
 from aiohttp.client_exceptions import ClientPayloadError
 from yarl import URL
 
-from avdl.m3u8.constant import INDEX_NAME
-from avdl.utils.logging import create_logger
+from avdl.m3u8.constant import INDEX_NAME, PART_DIRNAME
+from avdl.utils.logging import LOG_FILENAME, create_logger
 
 
 async def download_m3u8_parts(url_base: URL,
@@ -21,15 +21,16 @@ async def download_m3u8_parts(url_base: URL,
                               debug: bool) -> None:
     async with ClientSession(headers=headers) as session:
         # prepare dir
-        cache_dir.mkdir(parents=True)
+        part_dir = cache_dir / PART_DIRNAME
+        part_dir.mkdir(parents=True)
 
         # logger
         logger = create_logger(__name__,
                                'DEBUG' if debug else 'WARNING',
-                               cache_dir / 'log.txt')
+                               cache_dir / LOG_FILENAME)
 
         # write index
-        index_file = cache_dir / INDEX_NAME
+        index_file = part_dir / INDEX_NAME
         with open(index_file, 'w') as f:
             for part in parts:
                 f.write(f'file {part.name}\n')
@@ -44,7 +45,7 @@ async def download_m3u8_parts(url_base: URL,
                 url = part if part.is_absolute() else url_base / part.name
                 async with session.get(url) as response:
                     data = await response.read()
-                    with open(cache_dir / part.name, 'wb') as f:
+                    with open(part_dir / part.name, 'wb') as f:
                         f.write(data)
                         async with lock:
                             bar.update(1)
@@ -70,12 +71,14 @@ async def download_m3u8_parts(url_base: URL,
 
 
 def clean_up_cache(cache_dir: Path) -> None:
-    # remove self cache
-    if cache_dir.is_dir():
-        shutil.rmtree(cache_dir)
+    # remove parts cache
+    part_dir = cache_dir / PART_DIRNAME
+    if part_dir.is_dir():
+        shutil.rmtree(part_dir)
 
-    # remove parent cache dir if empty
+    # remove parent cache dirs if empty
     try:
+        cache_dir.rmdir()
         cache_dir.parent.rmdir()
     except OSError:
         pass

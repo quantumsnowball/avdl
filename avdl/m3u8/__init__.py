@@ -4,7 +4,8 @@ from pathlib import Path
 import click
 from yarl import URL
 
-from avdl.m3u8.constant import CACHE_DIR_PARENT, DEFAULT_HEADERS, INDEX_NAME
+from avdl.m3u8.constant import (CACHE_DIR_PARENT, DEFAULT_HEADERS, INDEX_NAME,
+                                PART_DIRNAME)
 from avdl.m3u8.download import clean_up_cache, download_m3u8_parts
 from avdl.m3u8.playlist import async_fetch_m3u8
 from avdl.m3u8.video import combine_parts
@@ -61,7 +62,7 @@ def m3u8(url: str,
     # define paths
     output_file = Path(output)
     cache_dir = CACHE_DIR_PARENT / output_file
-    index_file = cache_dir / INDEX_NAME
+    index_file = cache_dir / PART_DIRNAME / INDEX_NAME
 
     # download
     asyncio.run(download_m3u8_parts(req_url.parent, parts,
@@ -80,4 +81,4 @@ def m3u8(url: str,
     print_success(f'Saved as {output_file}')
 
     # cleanup
-    # clean_up_cache(cache_dir)
+    clean_up_cache(cache_dir)

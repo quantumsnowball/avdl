@@ -3,6 +3,7 @@ from logging.config import dictConfig
 from pathlib import Path
 from typing import Literal
 
+LOG_FILENAME = 'log.txt'
 DEFAULT_CONFIG = {
     'version': 1,
     'disable_existing_loggers': False,
