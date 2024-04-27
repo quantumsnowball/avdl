@@ -24,7 +24,8 @@ def generate_log_filename() -> str:
     return filename
 
 
-def create_logger(name: str,
+def create_logger(*,
+                  name: str,
                   level: Literal['WARNING', 'DEBUG'],
                   log_file: Path) -> logging.Logger:
     # config
