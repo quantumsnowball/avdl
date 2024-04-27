@@ -1,9 +1,12 @@
 import logging
+from datetime import datetime
 from logging.config import dictConfig
 from pathlib import Path
 from typing import Literal
 
-LOG_FILENAME = 'log.txt'
+LOG_FILENAME_PREFIX = 'log'
+LOG_FILENAME_EXT = 'txt'
+TIMESTAMP_FORMAT = '%Y%m%d-%H%M%S'
 DEFAULT_CONFIG = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -13,6 +16,12 @@ DEFAULT_CONFIG = {
         }
     },
 }
+
+
+def generate_log_filename() -> str:
+    timestamp = datetime.now().strftime(TIMESTAMP_FORMAT)
+    filename = f'{LOG_FILENAME_PREFIX}-{timestamp}.{LOG_FILENAME_EXT}'
+    return filename
 
 
 def create_logger(name: str,

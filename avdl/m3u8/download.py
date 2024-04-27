@@ -1,5 +1,6 @@
 import asyncio
 import shutil
+from datetime import datetime
 from pathlib import Path
 from typing import Sequence
 
@@ -9,7 +10,7 @@ from aiohttp.client_exceptions import ClientPayloadError
 from yarl import URL
 
 from avdl.m3u8.constant import INDEX_NAME, PART_DIRNAME
-from avdl.utils.logging import LOG_FILENAME, create_logger
+from avdl.utils.logging import create_logger, generate_log_filename
 
 
 async def download_m3u8_parts(url_base: URL,
@@ -25,9 +26,9 @@ async def download_m3u8_parts(url_base: URL,
         part_dir.mkdir(parents=True)
 
         # logger
-        logger = create_logger(__name__,
-                               'DEBUG' if debug else 'WARNING',
-                               cache_dir / LOG_FILENAME)
+        logger = create_logger(name=__name__,
+                               level='DEBUG' if debug else 'WARNING',
+                               log_file=cache_dir / generate_log_filename())
 
         # write index
         index_file = part_dir / INDEX_NAME
