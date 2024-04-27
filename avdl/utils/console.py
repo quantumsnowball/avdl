@@ -2,6 +2,8 @@ from typing import Any
 
 import click
 
+WINDOWS_FORBIDDEN_CHARS = ('\\', '/', ':', '*', '?', '<', '>', '|')
+
 
 def require_user_input(message: str,
                        *args: Any,

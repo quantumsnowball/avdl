@@ -9,7 +9,8 @@ from avdl.m3u8.constant import (CACHE_DIR_PARENT, DEFAULT_HEADERS, INDEX_NAME,
 from avdl.m3u8.download import clean_up_cache, download_m3u8_parts
 from avdl.m3u8.playlist import async_fetch_m3u8
 from avdl.m3u8.video import combine_parts
-from avdl.utils.console import (print_error, print_exception, print_key_value,
+from avdl.utils.console import (WINDOWS_FORBIDDEN_CHARS, print_error,
+                                print_exception, print_key_value,
                                 print_success, print_warning,
                                 require_user_input)
 from avdl.utils.text import kv_split
@@ -57,7 +58,13 @@ def m3u8(url: str,
     # ask for save filename if not already exists
     if output is None:
         output = require_user_input('Please input output filename',
-                                    forbidden_chars=('/', '\\'))
+                                    forbidden_chars=WINDOWS_FORBIDDEN_CHARS)
+
+    # assert the output file is a valid path
+    for c in output:
+        if c in WINDOWS_FORBIDDEN_CHARS:
+            print_error(f"Forbidden character `{c}` not allowed in output filename")
+            return
 
     # define paths
     output_file = Path(output)
