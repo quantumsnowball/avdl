@@ -13,4 +13,5 @@ DEFAULT_HEADERS = {
 
 # cache
 CACHE_DIR_PARENT = '.avdl'
+PART_DIRNAME = '.parts'
 INDEX_NAME = 'index.txt'
