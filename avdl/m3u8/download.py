@@ -62,7 +62,9 @@ async def download_m3u8_parts(url_base: URL,
                             aiohttp.ClientConnectorError,
                             aiohttp.ClientPayloadError,
                             aiohttp.ServerTimeoutError,
-                            aiohttp.ServerDisconnectedError) as e:
+                            aiohttp.ServerDisconnectedError,
+                            asyncio.CancelledError,
+                            asyncio.TimeoutError) as e:
                         logger.error(e, exc_info=True)
                         continue
                     except Exception as e:
