@@ -29,10 +29,11 @@ def partial(
     with alive_bar(manual=True) as bar:
         while True:
             with Curl(url, headers, start=start_byte) as data:
-                data.append_to(output_file)
                 total_bytes = data.total_bytes
-                start_byte = data.end_byte + 1
+                data.append_to(output_file)
+                bar.text(f'Downloading: {(data.end_byte + 1)/1e6:,.2f} / {total_bytes/1e6:,.2f} MB')
                 bar(data.progress)
+                start_byte = data.end_byte + 1
             if start_byte >= total_bytes:
                 bar(1.0)
                 break
