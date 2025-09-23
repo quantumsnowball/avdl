@@ -1,11 +1,7 @@
-import asyncio
 from pathlib import Path
 
 import click
-import httpx
-import requests
-from aiohttp import ClientSession
-from yarl import URL
+import pycurl as curl
 
 from avdl.m3u8.constant import DEFAULT_HEADERS
 from avdl.utils.text import kv_split
@@ -27,13 +23,11 @@ def partial(
     output_file = Path(output)
 
     #
-    with httpx.Client(http2=True) as client:
-        resp = client.get(url, headers=headers)
-        print(f'{resp.status_code=}')
-    # from pprint import pprint as pp
-    # resp = requests.get(url, headers=headers)
-    # print(f'Will download {url} and save as {output_file}')
-    # pp(req_headers)
-    # print(f'{resp.status_code=}')
-    # pp(dict(**resp.headers))
-    # print(resp.content)
+    c = curl.Curl()
+    c.setopt(curl.HTTP_VERSION, curl.CURL_HTTP_VERSION_2_0)
+    c.setopt(curl.URL, url)
+    c.setopt(curl.HTTPHEADER, [f'{k}: {v}' for k, v in headers.items()])
+    c.perform()
+    status_code = c.getinfo(curl.RESPONSE_CODE)
+    print(f'{status_code=}')
+    c.close()
