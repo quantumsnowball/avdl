@@ -1,4 +1,5 @@
 import re
+from functools import cached_property
 from io import BytesIO
 from pathlib import Path
 from typing import Self
@@ -33,12 +34,7 @@ class Curl:
         assert self.status_code == 206, 'Error receiving partial content'
 
         # get header infos
-        resp_headers_lines = self._resp_headers.getvalue().decode().splitlines()
-        content_range_line = next(line for line in resp_headers_lines if line.startswith('content-range'))
-        match = re.match(r'content-range: bytes (\d+)-(\d+)/(\d+)', content_range_line)
-        assert match, 'Error finding content-range data'
-        start_byte, end_byte, total_bytes = map(int, match.groups())
-        print(f'{start_byte=}, {end_byte=}, {total_bytes=}')
+        print(f'{self.start_byte=}, {self.end_byte=}, {self.total_bytes=}')
 
         #
         return self
@@ -52,3 +48,26 @@ class Curl:
     @property
     def status_code(self) -> int:
         return self._curl.getinfo(pycurl.RESPONSE_CODE)
+
+    @property
+    def response_headers(self) -> list[str]:
+        return self._resp_headers.getvalue().decode().splitlines()
+
+    @cached_property
+    def _content_range_info(self) -> tuple[int, ...]:
+        content_range_line = next(line for line in self.response_headers if line.startswith('content-range'))
+        match = re.match(r'content-range: bytes (\d+)-(\d+)/(\d+)', content_range_line)
+        assert match, 'Error finding content-range data'
+        return tuple(map(int, match.groups()))
+
+    @property
+    def start_byte(self) -> int:
+        return self._content_range_info[0]
+
+    @property
+    def end_byte(self) -> int:
+        return self._content_range_info[1]
+
+    @property
+    def total_bytes(self) -> int:
+        return self._content_range_info[2]
