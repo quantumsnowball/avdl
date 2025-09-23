@@ -1,6 +1,7 @@
 from pathlib import Path
 
 import click
+from alive_progress import alive_bar
 
 from avdl.m3u8.constant import DEFAULT_HEADERS
 from avdl.partial.curl import Curl
@@ -25,11 +26,13 @@ def partial(
     # appending data loop
     start_byte = 0
     total_bytes = 0
-    while True:
-        with Curl(url, headers, start=start_byte) as data:
-            print(f'{data.start_byte=}, {data.end_byte=}, {data.total_bytes=}')
-            data.append_to(output_file)
-            total_bytes = data.total_bytes
-            start_byte = data.end_byte + 1
-        if start_byte >= total_bytes:
-            break
+    with alive_bar(manual=True) as bar:
+        while True:
+            with Curl(url, headers, start=start_byte) as data:
+                data.append_to(output_file)
+                total_bytes = data.total_bytes
+                start_byte = data.end_byte + 1
+                bar(data.progress)
+            if start_byte >= total_bytes:
+                bar(1.0)
+                break
