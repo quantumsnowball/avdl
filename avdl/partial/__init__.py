@@ -61,6 +61,13 @@ def partial(
     #     resp_headers.close()
     #     resp_body.close()
 
-    with Curl(url, headers, start=0) as data:
-        print(f'{data.start_byte=}, {data.end_byte=}, {data.total_bytes=}')
-        data.append_to(output_file)
+    start_byte = 0
+    total_bytes = 0
+    while True:
+        with Curl(url, headers, start=start_byte) as data:
+            print(f'{data.start_byte=}, {data.end_byte=}, {data.total_bytes=}')
+            data.append_to(output_file)
+            total_bytes = data.total_bytes
+            start_byte = data.end_byte + 1
+        if start_byte >= total_bytes:
+            break
