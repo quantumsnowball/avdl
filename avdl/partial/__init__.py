@@ -22,6 +22,10 @@ def partial(
 
     # output file
     output_file = Path(output)
+    if output_file.exists():
+        if input(f'{output_file.name} already exists, overwrite? y/[n]: ').lower() != 'y':
+            return
+        output_file.unlink()
 
     # appending data loop
     start_byte = 0
