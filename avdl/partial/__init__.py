@@ -37,6 +37,10 @@ def partial(
         # send
         c.perform()
 
+        # should response 206
+        status_code = c.getinfo(pycurl.RESPONSE_CODE)
+        assert status_code == 206, 'Error receiving partial content'
+
         # get header infos
         resp_headers_lines = resp_headers.getvalue().decode().splitlines()
         content_range_line = next(line for line in resp_headers_lines if line.startswith('content-range'))
@@ -45,9 +49,7 @@ def partial(
         start_byte, end_byte, total_bytes = map(int, match.groups())
         print(f'{start_byte=}, {end_byte=}, {total_bytes=}')
 
-        # on response 206, save the bytes to output_file
-        status_code = c.getinfo(pycurl.RESPONSE_CODE)
-        assert status_code == 206, 'Error receiving partial content'
+        # save the bytes to output_file
         with open(output_file, 'wb') as f:
             f.write(resp_body.getvalue())
 
