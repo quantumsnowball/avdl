@@ -62,5 +62,4 @@ def partial(
     #     resp_body.close()
 
     with Curl(url, headers) as data:
-        # data.save()
-        pass
+        data.append_to(output_file)
