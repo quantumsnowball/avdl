@@ -72,6 +72,10 @@ class Curl:
     def total_bytes(self) -> int:
         return self._content_range_info[2]
 
+    @property
+    def progress(self) -> float:
+        return self.end_byte / self.total_bytes
+
     def append_to(self, output_file: Path) -> None:
         # append bytes at the end of file
         with open(output_file, 'ab') as f:
