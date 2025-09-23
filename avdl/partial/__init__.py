@@ -23,21 +23,32 @@ def partial(
     # output file
     output_file = Path(output)
 
-    #
+    # curl requests
     resp_headers = BytesIO()
     resp_body = BytesIO()
     c = pycurl.Curl()
     c.setopt(pycurl.HTTP_VERSION, pycurl.CURL_HTTP_VERSION_2_0)
     c.setopt(pycurl.URL, url)
     c.setopt(pycurl.HTTPHEADER, [f'{k}: {v}' for k, v in headers.items()])
-    c.setopt(pycurl.WRITEDATA, resp_body)
     c.setopt(pycurl.HEADERFUNCTION, resp_headers.write)
+    c.setopt(pycurl.WRITEDATA, resp_body)
     try:
+        # send
         c.perform()
+
+        # get header infos
+        headers_text = resp_headers.getvalue().decode()
+        for line in headers_text.splitlines():
+            print(line)
+
+        # on response 206, save the bytes to output_file
         status_code = c.getinfo(pycurl.RESPONSE_CODE)
-        print(f'{status_code=}')
+        assert status_code == 206, 'Error receiving partial content'
+        with open(output_file, 'wb') as f:
+            f.write(resp_body.getvalue())
+
     except pycurl.error as e:
-        print(f'{e=}')
+        print(e)
     finally:
         c.close()
         resp_headers.close()
