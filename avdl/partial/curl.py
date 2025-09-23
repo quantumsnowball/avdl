@@ -73,5 +73,6 @@ class Curl:
         return self._content_range_info[2]
 
     def append_to(self, output_file: Path) -> None:
-        with open(output_file, 'wb') as f:
+        # append bytes at the end of file
+        with open(output_file, 'ab') as f:
             f.write(self._resp_body.getvalue())
