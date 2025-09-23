@@ -19,7 +19,7 @@ def partial(
     output: str,
 ) -> None:
     # request header
-    headers = dict(**kv_split(header), )
+    headers = dict(**DEFAULT_HEADERS, **kv_split(header), )
 
     # output file
     output_file = Path(output)
