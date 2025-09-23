@@ -1,3 +1,4 @@
+import re
 from io import BytesIO
 from pathlib import Path
 
@@ -37,9 +38,12 @@ def partial(
         c.perform()
 
         # get header infos
-        headers_text = resp_headers.getvalue().decode()
-        for line in headers_text.splitlines():
-            print(line)
+        resp_headers_lines = resp_headers.getvalue().decode().splitlines()
+        content_range_line = next(line for line in resp_headers_lines if line.startswith('content-range'))
+        match = re.match(r'content-range: bytes (\d+)-(\d+)/(\d+)', content_range_line)
+        assert match, 'Error finding content-range data'
+        start_byte, end_byte, total_bytes = map(int, match.groups())
+        print(f'{start_byte=}, {end_byte=}, {total_bytes=}')
 
         # on response 206, save the bytes to output_file
         status_code = c.getinfo(pycurl.RESPONSE_CODE)
