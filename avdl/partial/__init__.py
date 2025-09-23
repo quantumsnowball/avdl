@@ -27,13 +27,13 @@ def partial(
     output_file = Path(output)
 
     #
-    # with httpx.Client(http2=True) as client:
-    #     resp = client.get(url, headers=headers)
-    #     print(f'{resp.status_code=}')
+    with httpx.Client(http2=True) as client:
+        resp = client.get(url, headers=headers)
+        print(f'{resp.status_code=}')
     # from pprint import pprint as pp
-    resp = requests.get(url, headers=headers)
+    # resp = requests.get(url, headers=headers)
     # print(f'Will download {url} and save as {output_file}')
     # pp(req_headers)
-    print(f'{resp.status_code=}')
+    # print(f'{resp.status_code=}')
     # pp(dict(**resp.headers))
     # print(resp.content)
