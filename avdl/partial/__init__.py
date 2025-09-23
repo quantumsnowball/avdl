@@ -62,4 +62,5 @@ def partial(
     #     resp_body.close()
 
     with Curl(url, headers) as data:
+        print(f'{data.start_byte=}, {data.end_byte=}, {data.total_bytes=}')
         data.append_to(output_file)

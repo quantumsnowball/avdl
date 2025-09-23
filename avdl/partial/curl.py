@@ -33,9 +33,6 @@ class Curl:
         # should response 206
         assert self.status_code == 206, 'Error receiving partial content'
 
-        # get header infos
-        print(f'{self.start_byte=}, {self.end_byte=}, {self.total_bytes=}')
-
         #
         return self
 
