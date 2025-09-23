@@ -1,6 +1,10 @@
+import asyncio
 from pathlib import Path
 
 import click
+import httpx
+import requests
+from aiohttp import ClientSession
 from yarl import URL
 
 from avdl.m3u8.constant import DEFAULT_HEADERS
@@ -17,14 +21,19 @@ def partial(
     output: str,
 ) -> None:
     # request header
-    req_headers = dict(**DEFAULT_HEADERS, **kv_split(header), )
-
-    # request url
-    req_url = URL(url)
+    headers = dict(**kv_split(header), )
 
     # output file
     output_file = Path(output)
 
     #
-    print(f'Will download {req_url} and save as {output_file}')
-    print(f'{req_headers=}')
+    # with httpx.Client(http2=True) as client:
+    #     resp = client.get(url, headers=headers)
+    #     print(f'{resp.status_code=}')
+    # from pprint import pprint as pp
+    resp = requests.get(url, headers=headers)
+    # print(f'Will download {url} and save as {output_file}')
+    # pp(req_headers)
+    print(f'{resp.status_code=}')
+    # pp(dict(**resp.headers))
+    # print(resp.content)
