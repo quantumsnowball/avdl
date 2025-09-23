@@ -18,7 +18,13 @@ def partial(
 ) -> None:
     # request header
     req_headers = dict(**DEFAULT_HEADERS, **kv_split(header), )
+
+    # request url
     req_url = URL(url)
+
+    # output file
     output_file = Path(output)
+
+    #
     print(f'Will download {req_url} and save as {output_file}')
     print(f'{req_headers=}')
