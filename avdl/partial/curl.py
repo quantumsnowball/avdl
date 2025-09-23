@@ -12,8 +12,11 @@ class Curl:
         self,
         url: str,
         headers: dict[str, str],
+        *,
+        start: int = 0,
     ) -> None:
         self._url = url
+        headers['range'] = f'bytes={start}-'
         self._req_headers = headers
         self._curl = pycurl.Curl()
         self._resp_headers = BytesIO()
