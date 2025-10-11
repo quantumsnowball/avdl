@@ -12,7 +12,8 @@ authors = [
 dependencies = [
     "click",
     "aiohttp",
-    "yarl"
+    "yarl",
+    "alive-progress",
 ]
 
 [project.urls]
