@@ -10,7 +10,6 @@ authors = [
     { name = "Quantum Snowball", email = "quantum.snowball@gmail.com" }
 ]
 dependencies = [
-    "click",
     "aiohttp",
     "yarl",
     "alive-progress",
