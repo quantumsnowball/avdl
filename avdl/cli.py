@@ -9,6 +9,3 @@ app = typer.Typer(
 
 app.add_typer(m3u8)
 app.add_typer(partial)
-
-if __name__ == "__main__":
-    app()
