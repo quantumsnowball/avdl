@@ -1,21 +1,22 @@
 from pathlib import Path
+from typing import Annotated
 
-import click
+import typer
 from alive_progress import alive_bar
+from typer import Argument, Option
 
 from avdl.m3u8.constant import DEFAULT_HEADERS
 from avdl.partial.curl import Curl
 from avdl.utils.text import kv_split
 
+app = typer.Typer()
 
-@click.command
-@click.argument('url', type=str, required=True)
-@click.option('-H', '--header', multiple=True, help='request header field')
-@click.option('-o', '--output', required=True, help='save as filename')
+
+@app.command()
 def partial(
-    url: str,
-    header: list[str],
-    output: str,
+    url: Annotated[str, Argument(help="URL of the partial file")],
+    output: Annotated[str, Option("--output", "-o", help="save as filename")],
+    header: Annotated[list[str], Option("--header", "-H", help="request header field")] = [],
 ) -> None:
     # request header
     headers = dict(**DEFAULT_HEADERS, **kv_split(header), )
