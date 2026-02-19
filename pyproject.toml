@@ -23,7 +23,7 @@ requires-python = ">=3.14"
 Homepage = "https://github.com/quantumsnowball/avdl"
 
 [project.scripts]
-avdl = "avdl.cli:avdl"
+avdl = "avdl.cli:app"
 
 [tool.pyright]
 venvPath = "./"

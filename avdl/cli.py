@@ -1,13 +1,14 @@
-import click
+import typer
 
-from avdl.m3u8 import m3u8
-from avdl.partial import partial
+from avdl.m3u8 import app as m3u8
 
-
-@click.group()
-def avdl() -> None:
-    pass
+app = typer.Typer(
+    no_args_is_help=True,
+)
 
 
-avdl.add_command(m3u8)
-avdl.add_command(partial)
+app.add_typer(m3u8)
+# app.add_typer(partial, name='m3u8')
+
+if __name__ == "__main__":
+    app()
