@@ -1,8 +1,10 @@
 from typing import Iterable
 
 
-def kv_split(txt: Iterable[str],
-             delimiter: str = ':') -> dict[str, str]:
+def kv_split(
+    txt: Iterable[str],
+    delimiter: str = ':'
+) -> dict[str, str]:
     ''' 
     split each str in txt on the first <delimiter> and output a dict 
     '''

@@ -10,10 +10,12 @@ from avdl.utils.console import print_warning
 TIME_PROGRESS_PREFIX = 'out_time='
 
 
-def combine_parts(output: Path,
-                  *,
-                  index: Path,
-                  total_seconds: int) -> None:
+def combine_parts(
+    output: Path,
+    *,
+    index: Path,
+    total_seconds: int
+) -> None:
     assert index.is_file()
 
     # concat

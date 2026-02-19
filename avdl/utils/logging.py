@@ -25,10 +25,12 @@ def generate_log_filename() -> str:
     return filename
 
 
-def create_logger(*,
-                  name: str,
-                  level: Literal['WARNING', 'DEBUG'],
-                  log_file: Path) -> logging.Logger:
+def create_logger(
+    *,
+    name: str,
+    level: Literal['WARNING', 'DEBUG'],
+    log_file: Path
+) -> logging.Logger:
     # config
     config = dict(**DEFAULT_CONFIG, **{
         'handlers': {

@@ -9,11 +9,13 @@ stdout = Console()
 stderr = Console(stderr=True)
 
 
-def require_user_input(message: str,
-                       *args: Any,
-                       non_empty: bool = True,
-                       forbidden_chars: tuple[str, ...] = tuple(),
-                       **kwargs: Any) -> str:
+def require_user_input(
+    message: str,
+    *args: Any,
+    non_empty: bool = True,
+    forbidden_chars: tuple[str, ...] = tuple(),
+    **kwargs: Any
+) -> str:
     styled_message = f'[cyan]{message}[/]'
     while True:
         try:
@@ -29,21 +31,15 @@ def require_user_input(message: str,
             continue
 
 
-def print_warning(message: str,
-                  *args: Any,
-                  **kwargs: Any) -> None:
+def print_warning(message: str, *args: Any, **kwargs: Any) -> None:
     return stderr.print(f'[yellow]{message}[/]', *args, **kwargs)
 
 
-def print_success(message: str,
-                  *args: Any,
-                  **kwargs: Any) -> None:
+def print_success(message: str, *args: Any, **kwargs: Any) -> None:
     return stderr.print(f'[green]{message}[/]', *args, **kwargs)
 
 
-def print_error(message: str,
-                *args: Any,
-                **kwargs: Any) -> None:
+def print_error(message: str, *args: Any, **kwargs: Any) -> None:
     return stderr.print(f'[red]{message}[/]', *args, **kwargs)
 
 
@@ -51,8 +47,5 @@ def print_exception(e: Exception) -> None:
     print_error(f'{e.__class__.__name__}: {str(e)}')
 
 
-def print_key_value(message: str,
-                    value: Any,
-                    *args: Any,
-                    **kwargs: Any) -> None:
+def print_key_value(message: str, value: Any, *args: Any, **kwargs: Any) -> None:
     return stdout.print(f'[blue]{message}[/]: {str(value)}', *args, **kwargs)

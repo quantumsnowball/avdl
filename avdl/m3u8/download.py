@@ -6,20 +6,21 @@ from typing import Sequence
 import aiohttp
 import typer
 from aiohttp import ClientSession
-from aiohttp.client_exceptions import ClientPayloadError
 from yarl import URL
 
 from avdl.m3u8.constant import INDEX_NAME, PART_DIRNAME
 from avdl.utils.logging import create_logger, generate_log_filename
 
 
-async def download_m3u8_parts(url_base: URL,
-                              parts: Sequence[URL],
-                              *,
-                              headers: dict[str, str],
-                              cache_dir: Path,
-                              retries: int,
-                              debug: bool) -> None:
+async def download_m3u8_parts(
+    url_base: URL,
+    parts: Sequence[URL],
+    *,
+    headers: dict[str, str],
+    cache_dir: Path,
+    retries: int,
+    debug: bool
+) -> None:
     async with ClientSession(headers=headers) as session:
         # prepare dir
         part_dir = cache_dir / PART_DIRNAME
