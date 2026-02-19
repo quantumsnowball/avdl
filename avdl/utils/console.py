@@ -1,6 +1,7 @@
 from typing import Any
 
 import click
+from rich.prompt import Prompt
 
 WINDOWS_FORBIDDEN_CHARS = ('\\', '/', ':', '*', '?', '<', '>', '|')
 
@@ -10,10 +11,10 @@ def require_user_input(message: str,
                        non_empty: bool = True,
                        forbidden_chars: tuple[str, ...] = tuple(),
                        **kwargs: Any) -> str:
-    styled_message = click.style(message, fg='cyan')
+    styled_message = f'[cyan]{message}[/]'
     while True:
         try:
-            user_input = input(styled_message + ': ', *args, **kwargs)
+            user_input = Prompt.ask(styled_message, *args, **kwargs)
             if non_empty and len(user_input) == 0:
                 raise ValueError('Empty string is not allowed')
             for c in forbidden_chars:
