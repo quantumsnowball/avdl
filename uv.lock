@@ -121,8 +121,8 @@ source = { editable = "." }
 dependencies = [
     { name = "aiohttp" },
     { name = "alive-progress" },
-    { name = "click" },
     { name = "pycurl" },
+    { name = "rich" },
     { name = "typer" },
     { name = "yarl" },
 ]
@@ -131,9 +131,9 @@ dependencies = [
 requires-dist = [
     { name = "aiohttp" },
     { name = "alive-progress" },
-    { name = "click" },
     { name = "pycurl" },
-    { name = "typer", specifier = ">=0.24.0" },
+    { name = "rich" },
+    { name = "typer" },
     { name = "yarl" },
 ]
 

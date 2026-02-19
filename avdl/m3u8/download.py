@@ -4,7 +4,7 @@ from pathlib import Path
 from typing import Sequence
 
 import aiohttp
-import click
+import typer
 from aiohttp import ClientSession
 from aiohttp.client_exceptions import ClientPayloadError
 from yarl import URL
@@ -37,7 +37,7 @@ async def download_m3u8_parts(url_base: URL,
                 f.write(f'file {part.name}\n')
 
         # download parts
-        with click.progressbar(length=len(parts),
+        with typer.progressbar(length=len(parts),
                                label='Downloading',
                                width=shutil.get_terminal_size()[0]//2) as bar:
             lock = asyncio.Lock()

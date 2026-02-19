@@ -1,8 +1,12 @@
 from typing import Any
 
-import click
+from rich.console import Console
+from rich.prompt import Prompt
 
 WINDOWS_FORBIDDEN_CHARS = ('\\', '/', ':', '*', '?', '<', '>', '|')
+
+stdout = Console()
+stderr = Console(stderr=True)
 
 
 def require_user_input(message: str,
@@ -10,10 +14,10 @@ def require_user_input(message: str,
                        non_empty: bool = True,
                        forbidden_chars: tuple[str, ...] = tuple(),
                        **kwargs: Any) -> str:
-    styled_message = click.style(message, fg='cyan')
+    styled_message = f'[cyan]{message}[/]'
     while True:
         try:
-            user_input = input(styled_message + ': ', *args, **kwargs)
+            user_input = Prompt.ask(styled_message, *args, **kwargs)
             if non_empty and len(user_input) == 0:
                 raise ValueError('Empty string is not allowed')
             for c in forbidden_chars:
@@ -28,19 +32,19 @@ def require_user_input(message: str,
 def print_warning(message: str,
                   *args: Any,
                   **kwargs: Any) -> None:
-    return click.secho(message, *args, fg='yellow', **kwargs)
+    return stderr.print(f'[yellow]{message}[/]', *args, **kwargs)
 
 
 def print_success(message: str,
                   *args: Any,
                   **kwargs: Any) -> None:
-    return click.secho(message, *args, fg='green', **kwargs)
+    return stderr.print(f'[green]{message}[/]', *args, **kwargs)
 
 
 def print_error(message: str,
                 *args: Any,
                 **kwargs: Any) -> None:
-    return click.secho(message, *args, fg='red', **kwargs)
+    return stderr.print(f'[red]{message}[/]', *args, **kwargs)
 
 
 def print_exception(e: Exception) -> None:
@@ -51,5 +55,4 @@ def print_key_value(message: str,
                     value: Any,
                     *args: Any,
                     **kwargs: Any) -> None:
-    styled_message = click.style(message, fg='blue')
-    return click.echo(f'{styled_message}: {str(value)}', *args, **kwargs)
+    return stdout.print(f'[blue]{message}[/]: {str(value)}', *args, **kwargs)

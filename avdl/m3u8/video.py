@@ -1,10 +1,11 @@
-from pathlib import Path
-import subprocess
-import click
 import shutil
-from avdl.utils.console import print_warning
+import subprocess
 from datetime import datetime
+from pathlib import Path
 
+import typer
+
+from avdl.utils.console import print_warning
 
 TIME_PROGRESS_PREFIX = 'out_time='
 
@@ -29,7 +30,7 @@ def combine_parts(output: Path,
 
     # progress
     if proc.stdout is not None:
-        with click.progressbar(length=total_seconds,
+        with typer.progressbar(length=total_seconds,
                                label='Combining',
                                width=shutil.get_terminal_size()[0]//2) as bar:
             for line_b in proc.stdout:
