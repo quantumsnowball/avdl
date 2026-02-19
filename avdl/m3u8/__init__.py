@@ -1,7 +1,9 @@
 import asyncio
 from pathlib import Path
+from typing import Annotated, Optional
 
-import click
+import typer
+from typer import Argument, Option
 from yarl import URL
 
 from avdl.m3u8.constant import (CACHE_DIR_PARENT, DEFAULT_HEADERS, INDEX_NAME,
@@ -15,20 +17,18 @@ from avdl.utils.console import (WINDOWS_FORBIDDEN_CHARS, print_error,
                                 require_user_input)
 from avdl.utils.text import kv_split
 
+app = typer.Typer()
 
-@click.command()
-@click.argument('url', type=str, default='', required=False)
-@click.option('-H', '--header', multiple=True, help='request header field')
-@click.option('-o', '--output', default=None, required=False, help='save as filename')
-@click.option('--limit', type=int, default=None, required=False, help='part limit')
-@click.option('--retries', type=int, default=20, required=False, help='timeout retries', show_default=True)
-@click.option('--debug', is_flag=True, help='log all debug message')
-def m3u8(url: str,
-         header: list[str],
-         output: str,
-         limit: int | None,
-         retries: int,
-         debug: bool) -> None:
+
+@app.command()
+def m3u8(
+    url: Annotated[str, Argument(help="URL of the m3u8")] = "",
+    header: Annotated[list[str], Option("--header", "-H", help="request header field")] = [],
+    output: Annotated[Optional[str], Option("--output", "-o", help="save as filename")] = None,
+    limit: Annotated[Optional[int], Option(help="part limit")] = None,
+    retries: Annotated[int, Option(help="timeout retries", show_default=True)] = 20,
+    debug: Annotated[bool, Option(help="log all debug message")] = False,
+) -> None:
     # request header
     req_headers = dict(**DEFAULT_HEADERS, **kv_split(header), )
 
