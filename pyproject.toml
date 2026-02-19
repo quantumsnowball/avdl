@@ -15,6 +15,7 @@ dependencies = [
     "yarl",
     "alive-progress",
     "pycurl",
+    "typer",
 ]
 requires-python = ">=3.14"
 
