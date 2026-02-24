@@ -6,8 +6,9 @@ from alive_progress import alive_bar
 from typer import Argument, Option
 
 from avdl.m3u8.constant import DEFAULT_HEADERS
-from avdl.partial.curl import Curl
 from avdl.utils.text import kv_split
+
+from .curl import Curl
 
 app = typer.Typer()
 

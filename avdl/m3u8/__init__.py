@@ -6,15 +6,6 @@ import typer
 from typer import Argument, Option
 from yarl import URL
 
-from avdl.m3u8.constant import (
-    CACHE_DIR_PARENT,
-    DEFAULT_HEADERS,
-    INDEX_NAME,
-    PART_DIRNAME,
-)
-from avdl.m3u8.download import clean_up_cache, download_m3u8_parts
-from avdl.m3u8.playlist import async_fetch_m3u8
-from avdl.m3u8.video import combine_parts
 from avdl.utils.console import (
     WINDOWS_FORBIDDEN_CHARS,
     print_error,
@@ -25,6 +16,16 @@ from avdl.utils.console import (
     require_user_input,
 )
 from avdl.utils.text import kv_split
+
+from .constant import (
+    CACHE_DIR_PARENT,
+    DEFAULT_HEADERS,
+    INDEX_NAME,
+    PART_DIRNAME,
+)
+from .download import clean_up_cache, download_m3u8_parts
+from .playlist import async_fetch_m3u8
+from .video import combine_parts
 
 app = typer.Typer()
 

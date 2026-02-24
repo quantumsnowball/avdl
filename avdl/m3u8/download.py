@@ -8,8 +8,9 @@ import typer
 from aiohttp import ClientSession
 from yarl import URL
 
-from avdl.m3u8.constant import INDEX_NAME, PART_DIRNAME
 from avdl.utils.logging import create_logger, generate_log_filename
+
+from .constant import INDEX_NAME, PART_DIRNAME
 
 
 async def download_m3u8_parts(
