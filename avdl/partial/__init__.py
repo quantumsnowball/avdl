@@ -14,9 +14,9 @@ app = typer.Typer()
 
 @app.command()
 def partial(
-    url: Annotated[str, Argument(help="URL of the partial file")],
-    output: Annotated[str, Option("--output", "-o", help="save as filename")],
-    header: Annotated[list[str], Option("--header", "-H", help="request header field")] = [],
+    url: Annotated[str, Argument(help='URL of the partial file')],
+    output: Annotated[str, Option('--output', '-o', help='save as filename')],
+    header: Annotated[list[str], Option('--header', '-H', help='request header field')] = [],
 ) -> None:
     # request header
     headers = dict(**DEFAULT_HEADERS, **kv_split(header), )

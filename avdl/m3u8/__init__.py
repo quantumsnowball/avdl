@@ -6,15 +6,24 @@ import typer
 from typer import Argument, Option
 from yarl import URL
 
-from avdl.m3u8.constant import (CACHE_DIR_PARENT, DEFAULT_HEADERS, INDEX_NAME,
-                                PART_DIRNAME)
+from avdl.m3u8.constant import (
+    CACHE_DIR_PARENT,
+    DEFAULT_HEADERS,
+    INDEX_NAME,
+    PART_DIRNAME,
+)
 from avdl.m3u8.download import clean_up_cache, download_m3u8_parts
 from avdl.m3u8.playlist import async_fetch_m3u8
 from avdl.m3u8.video import combine_parts
-from avdl.utils.console import (WINDOWS_FORBIDDEN_CHARS, print_error,
-                                print_exception, print_key_value,
-                                print_success, print_warning,
-                                require_user_input)
+from avdl.utils.console import (
+    WINDOWS_FORBIDDEN_CHARS,
+    print_error,
+    print_exception,
+    print_key_value,
+    print_success,
+    print_warning,
+    require_user_input,
+)
 from avdl.utils.text import kv_split
 
 app = typer.Typer()
@@ -22,12 +31,12 @@ app = typer.Typer()
 
 @app.command()
 def m3u8(
-    url: Annotated[str, Argument(help="URL of the m3u8")] = "",
-    header: Annotated[list[str], Option("--header", "-H", help="request header field")] = [],
-    output: Annotated[Optional[str], Option("--output", "-o", help="save as filename")] = None,
-    limit: Annotated[Optional[int], Option(help="part limit")] = None,
-    retries: Annotated[int, Option(help="timeout retries", show_default=True)] = 20,
-    debug: Annotated[bool, Option(help="log all debug message")] = False,
+    url: Annotated[str, Argument(help='URL of the m3u8')] = '',
+    header: Annotated[list[str], Option('--header', '-H', help='request header field')] = [],
+    output: Annotated[Optional[str], Option('--output', '-o', help='save as filename')] = None,
+    limit: Annotated[Optional[int], Option(help='part limit')] = None,
+    retries: Annotated[int, Option(help='timeout retries', show_default=True)] = 20,
+    debug: Annotated[bool, Option(help='log all debug message')] = False,
 ) -> None:
     # request header
     req_headers = dict(**DEFAULT_HEADERS, **kv_split(header), )
@@ -63,7 +72,7 @@ def m3u8(
     # assert the output file is a valid path
     for c in output:
         if c in WINDOWS_FORBIDDEN_CHARS:
-            print_error(f"Forbidden character `{c}` not allowed in output filename")
+            print_error(f'Forbidden character `{c}` not allowed in output filename')
             return
 
     # define paths

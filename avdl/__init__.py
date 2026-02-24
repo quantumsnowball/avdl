@@ -1,5 +1,5 @@
 # enable advance key press, e.g. arrow keys
-import readline
+import readline as readline
 
 import typer
 
