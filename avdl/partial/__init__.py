@@ -13,7 +13,10 @@ from .curl import Curl
 app = typer.Typer()
 
 
-@app.command()
+@app.command(
+    no_args_is_help=True,
+    help='download partial content video file',
+)
 def partial(
     url: Annotated[str, Argument(help='URL of the partial file')],
     output: Annotated[str, Option('--output', '-o', help='save as filename')],

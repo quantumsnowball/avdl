@@ -30,7 +30,10 @@ from .video import combine_parts
 app = typer.Typer()
 
 
-@app.command()
+@app.command(
+    no_args_is_help=True,
+    help='download m3u8 playlist as mp4 video',
+)
 def m3u8(
     url: Annotated[str, Argument(help='URL of the m3u8')] = '',
     header: Annotated[list[str], Option('--header', '-H', help='request header field')] = [],
